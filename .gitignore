@@ -9,7 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+.replit
+poetry.lock
+pyproject.toml
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
