@@ -2,6 +2,7 @@
 A minimilist program to show value iteration in a deterministic grid world
 v(s) <- v(s)t + learning_rate * ( v(s)t+1 - v(st))
 
+
 There is only one reward +1 at the end of the episode
 There is no other negative rewards
 
