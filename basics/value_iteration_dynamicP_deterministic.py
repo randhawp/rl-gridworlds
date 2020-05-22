@@ -1,9 +1,18 @@
-# test
+'''
+- Synchronous Dynamic programming - that is sweep across all states
+- Deterministic actions - i.e all possible actions have equal probability
+
+This example illustrates policy iteration with with the help of a [ n x n ] grid
+The top left and bottom right are terminal states with value 0
+Reward = -1
+Gamma = 1
+Two terminal states with value 0
+The grid starts with all cells of the grid initialzed as zero
+'''
 
 import numpy as np 
-import pandas 
-import random
 
+# the board size can be changed
 BOARD_ROW = 4
 BOARD_COL = 4
 
@@ -12,25 +21,41 @@ START_COL=0
 current_row=START_ROW
 current_col=START_COL
 
-row_labels = np.arange(0, BOARD_ROW, 1).astype('S')
-column_labels = np.arange(0, BOARD_COL, 1).astype('S')
 
-# trow, tcol define the winning/target cell
+# trow, tcol are x,y for the bottom right terminal states
 trow = BOARD_ROW -1 
 tcol = BOARD_COL - 1
 
 #init the states grid
+
+#this is the store the state value (of every cell) of the individual sweep
 states = np.zeros(BOARD_ROW*BOARD_COL).reshape(BOARD_ROW,BOARD_COL)
+
+#this is to store the cumulative value after the sweep ends
 statesnew = np.zeros(BOARD_ROW*BOARD_COL).reshape(BOARD_ROW,BOARD_COL)
-#states[states==0]=-1 # set the initial state as all -1 
-states[trow,tcol]=0 # set value of target cell as +1 # except this terminal state (top left)
-states[0,0]=0 #and this termianl state bottom right
+
+states[trow,tcol]=0 # terminal state value   
+states[0,0]=0 # terminal state value
+
+'''
+Note on actions
+The agent can move either up,down,left or right (4 possible actions)
+From some cell on the border of the grid one or two actions may not be possible
+as in the case of the top right and bottom left. All other edges have only 3 actions
+Actions have equal probability of 0.25% each (0.25 * 4 = 100%)
+The sum of probabilites of all actions has to be 100%
+
+Each action has a reward of -1
+'''
 
 gamma=1
-reward=-1
+reward=-1 
 print(states)
 t=0
-while t < 24:
+convergencelimit = 0.0001
+converged = False
+
+while not converged :
   row=0
   col=0
   c=1
@@ -38,8 +63,8 @@ while t < 24:
   while c < (BOARD_ROW * BOARD_COL -1 ): #loop through all the cells of grid except first and last i.e 0 and 15
     row=int(c/BOARD_ROW)
     col=c-(row*BOARD_COL)
-    #print("[count] r,c",c,row,col)
     
+    #for each cell / state caluate the value for each action
     actionvalue=np.zeros(4)
     if row - 1 >=0: #top
       actionvalue[0]=0.25 * (reward + gamma*(states[row-1,col]))
@@ -61,12 +86,26 @@ while t < 24:
     else:
       actionvalue[3]=0.25 * (reward + gamma*(states[row,col]))
       
+    # add up the value for each of the possible actions in the current
+    # cell and update statesnew (Note: do not update the current grid values
+    # until full sweep of the entire state space is done)
+    
     statesnew[row,col]= np.sum(actionvalue)
     c=c+1
   
   
-  #copy the new states value after scanning the grid once  
+  #calculate the diff between the two state spaces
+  diff = statesnew - states
+  diffav = abs(np.sum(diff))/(BOARD_COL*BOARD_ROW)
+  
+  #after each pass update the state space with the new values  
+  states = np.copy(statesnew)
   t=t+1  
-  print(statesnew)
+  print(np.round(statesnew))
 
+  #have the states converged (exit condition)
+  if(diffav <= convergencelimit):
+    break
+
+print("Convergence reached after ", t , " steps")
 
