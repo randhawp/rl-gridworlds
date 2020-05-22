@@ -1,9 +1,8 @@
 '''
-VALUE ITERATION
 - Synchronous Dynamic programming - that is sweep across all states
 - Deterministic actions - i.e all possible actions have equal probability
 
-This example illustrates value iteration with with the help of a [ n x n ] grid
+This example illustrates policy iteration with with the help of a [ n x n ] grid
 The top left and bottom right are terminal states with value 0
 The agent is following a uniform random policy i.e all its actions have equal probability
 Reward = -1
@@ -134,4 +133,7 @@ On convergence
 +-----+-----+-----+-----+
 
 '''
+
+
+
 
