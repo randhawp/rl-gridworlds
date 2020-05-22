@@ -24,8 +24,8 @@ The grid starts with all cells of the grid initialzed as zero and the terminal s
 import numpy as np 
 
 # the board size can be changed
-BOARD_ROW = 4
-BOARD_COL = 4
+BOARD_ROW = 5
+BOARD_COL = 7
 
 START_ROW=0
 START_COL=0
@@ -72,7 +72,7 @@ while not converged :
   c=1
   temp=0
   while c < (BOARD_ROW * BOARD_COL -1 ): #loop through all the cells of grid except first and last i.e 0 and 15
-    row=int(c/BOARD_ROW)
+    row=int(c/BOARD_COL)
     col=c-(row*BOARD_COL)
     
     #for each cell / state caluate the value for each action
