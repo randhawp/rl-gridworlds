@@ -7,7 +7,17 @@ The top left and bottom right are terminal states with value 0
 Reward = -1
 Gamma = 1
 Two terminal states with value 0
-The grid starts with all cells of the grid initialzed as zero
+The grid starts with all cells of the grid initialzed as zero and the terminal state remain zero
++---+--+--+---+
+| 0 |  |  |   |
++---+--+--+---+
+|   |  |  |   |
++---+--+--+---+
+|   |  |  |   |
++---+--+--+---+
+|   |  |  | 0 |
++---+--+--+---+
+
 '''
 
 import numpy as np 
@@ -108,4 +118,21 @@ while not converged :
     break
 
 print("Convergence reached after ", t , " steps")
+
+'''
+On convergence
++-----+-----+-----+-----+
+|  0  | -14 | -20 | -22 |
++-----+-----+-----+-----+
+| -14 | -18 | -20 | -20 |
++-----+-----+-----+-----+
+| -20 | -20 | -18 | -14 |
++-----+-----+-----+-----+
+| -22 | -20 | -14 |  0  |
++-----+-----+-----+-----+
+
+'''
+
+
+
 
