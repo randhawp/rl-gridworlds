@@ -21,7 +21,7 @@ The grid starts with all cells of the grid initialzed as zero and the terminal s
 
 '''
 
-import numpy as np 
+import numpy as np
 
 # the board size can be changed
 BOARD_ROW = 5
@@ -34,7 +34,7 @@ current_col=START_COL
 
 
 # trow, tcol are x,y for the bottom right terminal states
-trow = BOARD_ROW -1 
+trow = BOARD_ROW -1
 tcol = BOARD_COL - 1
 
 #init the states grid
@@ -45,7 +45,7 @@ states = np.zeros(BOARD_ROW*BOARD_COL).reshape(BOARD_ROW,BOARD_COL)
 #this is to store the cumulative value after the sweep ends
 statesnew = np.zeros(BOARD_ROW*BOARD_COL).reshape(BOARD_ROW,BOARD_COL)
 
-states[trow,tcol]=0 # terminal state value   
+states[trow,tcol]=0 # terminal state value
 states[0,0]=0 # terminal state value
 
 '''
@@ -60,7 +60,7 @@ Each action has a reward of -1
 '''
 
 gamma=1
-reward=-1 
+reward=-1
 print(states)
 t=0
 convergencelimit = 0.0001
@@ -74,44 +74,44 @@ while not converged :
   while c < (BOARD_ROW * BOARD_COL -1 ): #loop through all the cells of grid except first and last i.e 0 and 15
     row=int(c/BOARD_COL)
     col=c-(row*BOARD_COL)
-    
+
     #for each cell / state caluate the value for each action
-    actionvalue=np.zeros(4)
+    utilityvalue=np.zeros(4)
     if row - 1 >=0: #top
-      actionvalue[0]=0.25 * (reward + gamma*(states[row-1,col]))
+      utilityvalue[0]=0.25 * (reward + gamma*(states[row-1,col]))
     else:
-      actionvalue[0]=0.25 *  (reward + gamma*(states[row,col]))
-    
+      utilityvalue[0]=0.25 *  (reward + gamma*(states[row,col]))
+
     if row + 1 < BOARD_ROW:#bottom
-      actionvalue[1]=0.25 * (reward + gamma*(states[row+1,col]))
+      utilityvalue[1]=0.25 * (reward + gamma*(states[row+1,col]))
     else:
-      actionvalue[1]=0.25 * (reward + gamma*(states[row,col]))
-    
+      utilityvalue[1]=0.25 * (reward + gamma*(states[row,col]))
+
     if col - 1 >= 0:#left
-      actionvalue[2]=0.25* (reward + gamma*(states[row,col-1]))
+      utilityvalue[2]=0.25* (reward + gamma*(states[row,col-1]))
     else:
-      actionvalue[2]=0.25 * (reward + gamma*(states[row,col]))
-    
+      utilityvalue[2]=0.25 * (reward + gamma*(states[row,col]))
+
     if col + 1 < BOARD_COL: #right
-      actionvalue[3]=0.25* (reward + gamma*(states[row,col+1]))
+      utilityvalue[3]=0.25* (reward + gamma*(states[row,col+1]))
     else:
-      actionvalue[3]=0.25 * (reward + gamma*(states[row,col]))
-      
+      utilityvalue[3]=0.25 * (reward + gamma*(states[row,col]))
+
     # add up the value for each of the possible actions in the current
     # cell and update statesnew (Note: do not update the current grid values
     # until full sweep of the entire state space is done)
-    
-    statesnew[row,col]= np.sum(actionvalue)
+
+    statesnew[row,col]= np.sum(utilityvalue)
     c=c+1
-  
-  
+
+
   #calculate the diff between the two state spaces
   diff = statesnew - states
   diffav = abs(np.sum(diff))/(BOARD_COL*BOARD_ROW)
-  
-  #after each pass update the state space with the new values  
+
+  #after each pass update the state space with the new values
   states = np.copy(statesnew)
-  t=t+1  
+  t=t+1
   print(np.round(statesnew))
 
   #have the states converged (exit condition)
@@ -133,7 +133,3 @@ On convergence
 +-----+-----+-----+-----+
 
 '''
-
-
-
-
