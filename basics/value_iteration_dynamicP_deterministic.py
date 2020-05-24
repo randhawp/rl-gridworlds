@@ -69,7 +69,7 @@ reward=0
 print(states)
 
 t=0
-convergencelimit = 0.001
+convergencelimit = 0.0001
 converged = False
 c=4 #can start from any cell 0 is first (top left)
 while not converged :
