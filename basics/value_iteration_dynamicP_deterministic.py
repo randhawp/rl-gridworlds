@@ -46,6 +46,8 @@ statesnew = np.zeros(BOARD_ROW*BOARD_COL).reshape(BOARD_ROW,BOARD_COL)
 states[trow,tcol]= 1 # terminal state value   
 states[trow+1,tcol]= -1 # terminal state value
 
+runningpolicy=np.chararray(BOARD_ROW * BOARD_COL) 
+latestpolicy=np.chararray(BOARD_ROW * BOARD_COL) 
 '''
 Note on actions
 The agent can move either up,down,left or right (4 possible actions)
@@ -85,11 +87,13 @@ while not converged :
     actionvalue=np.zeros(4)
 
     if row==trow and col==tcol:
-      c=c+1
       statesnew[trow,tcol]= 1 # terminal state value   
+      runningpolicy[c]='X'
+      c=c+1
       continue
     if row==trow+1 and col==tcol:
       statesnew[trow+1,tcol]= -1 # terminal state value   
+      runningpolicy[c]='X'
       c=c+1
       continue
       
@@ -102,7 +106,6 @@ while not converged :
     if row + 1 < BOARD_ROW:#bottom
       actionvalue[1]=0.25 * (getreward(row+1,col) + gamma*(states[row+1,col]))
     else:
-      print( "row col",row,col)
       actionvalue[1]=0.25 * (getreward(row,col) + gamma*(states[row,col]))
     
     if col - 1 >= 0:#left
@@ -122,6 +125,20 @@ while not converged :
     # until full sweep of the entire state space is done)
     
     statesnew[row,col]= np.sum(actionvalue)
+    maxv = np.max(actionvalue)
+    result = np.where(actionvalue == maxv)
+    compass=''
+    direction = (result[0][0])
+    if direction == 0:
+      compass = 'U'
+    if direction == 1:
+      compass = 'D'
+    if direction == 2:
+      compass = 'L'
+    if direction == 3:
+      compass = 'R'
+       
+    runningpolicy[c]=compass
     c=c+1
   
   
@@ -133,14 +150,16 @@ while not converged :
   states = np.copy(statesnew)
   t=t+1  
   c=0
-  print((states))
+  #print((states))
+  latestpolicy = runningpolicy
 
   #have the states converged (exit condition)
   if(diffav <= convergencelimit):
     break
 
 print("Convergence reached after ", t , " steps")
-
+print(states)
+print(latestpolicy.reshape(BOARD_ROW,BOARD_COL).astype(str))
 '''
 [[-0.30734218 -0.17750818  0.31816232  1.        ]
  [-0.40129651 -0.44877186 -0.7068359  -1.        ]
