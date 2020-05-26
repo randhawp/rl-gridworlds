@@ -20,7 +20,11 @@ env.render()
 
 policy={}
 policy = create_random_policy(env)
+<<<<<<< HEAD
 #print(policy)
 
 print("Action space: ", env.action_space)
 print("Observation space: ", env.observation_space)
+=======
+print(policy)
+>>>>>>> ac67edece9762d1279a8706983fa32460be6b0bf
