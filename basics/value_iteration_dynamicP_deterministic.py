@@ -84,7 +84,7 @@ while not converged :
     col=c-(row*BOARD_COL)
     
     #for each cell / state caluate the value for each action
-    actionvalue=np.zeros(4)
+    utilityvalue=np.zeros(4)
 
     if row==trow and col==tcol:
       statesnew[trow,tcol]= 1 # terminal state value   
@@ -99,24 +99,24 @@ while not converged :
       
     
     if row - 1 >=0: #top
-      actionvalue[0]=0.25 * (getreward(row-1,col) + gamma*(states[row-1,col]))
+      utilityvalue[0]=0.25 * (getreward(row-1,col) + gamma*(states[row-1,col]))
     else:
-      actionvalue[0]=0.25 *  (getreward(row,col) + gamma*(states[row,col]))
+      utilityvalue[0]=0.25 *  (getreward(row,col) + gamma*(states[row,col]))
     
     if row + 1 < BOARD_ROW:#bottom
-      actionvalue[1]=0.25 * (getreward(row+1,col) + gamma*(states[row+1,col]))
+      utilityvalue[1]=0.25 * (getreward(row+1,col) + gamma*(states[row+1,col]))
     else:
-      actionvalue[1]=0.25 * (getreward(row,col) + gamma*(states[row,col]))
+      utilityvalue[1]=0.25 * (getreward(row,col) + gamma*(states[row,col]))
     
     if col - 1 >= 0:#left
-      actionvalue[2]=0.25* (getreward(row,col-1) + gamma*(states[row,col-1]))
+      utilityvalue[2]=0.25* (getreward(row,col-1) + gamma*(states[row,col-1]))
     else:
-      actionvalue[2]=0.25 * (getreward(row,col) + gamma*(states[row,col]))
+      utilityvalue[2]=0.25 * (getreward(row,col) + gamma*(states[row,col]))
     
     if col + 1 < BOARD_COL: #right
-      actionvalue[3]=0.25* (getreward(row,col+1) + gamma*(states[row,col+1]))
+      utilityvalue[3]=0.25* (getreward(row,col+1) + gamma*(states[row,col+1]))
     else:
-      actionvalue[3]=0.25 * (getreward(row,col) + gamma*(states[row,col]))
+      utilityvalue[3]=0.25 * (getreward(row,col) + gamma*(states[row,col]))
 
 
     reward = 0
@@ -124,9 +124,9 @@ while not converged :
     # cell and update statesnew (Note: do not update the current grid values
     # until full sweep of the entire state space is done)
     
-    statesnew[row,col]= np.sum(actionvalue)
-    maxv = np.max(actionvalue)
-    result = np.where(actionvalue == maxv)
+    statesnew[row,col]= np.sum(utilityvalue)
+    maxv = np.max(utilityvalue)
+    result = np.where(utilityvalue == maxv)
     compass=''
     direction = (result[0][0])
     if direction == 0:
