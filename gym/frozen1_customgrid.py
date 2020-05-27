@@ -1,7 +1,7 @@
 # frozen-lake-ex2.py
 import gym
  
-MAX_ITERATIONS = 10
+MAX_ITERATIONS = 4
 
 custom_map = [
     'SFFHF',
@@ -11,7 +11,7 @@ custom_map = [
     'HFFFG'
 ]
 
-env = gym.make("FrozenLake-v0", desc=custom_map)
+env = gym.make("FrozenLake-v0", desc=custom_map,is_slippery=False)
 env.reset()
 env.render()
 for i in range(MAX_ITERATIONS):
