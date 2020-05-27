@@ -1,12 +1,14 @@
 import gym
 import numpy as np
 '''
-Cannonical example of finding the value of each state using the Bellman equation
+Cannonical example of finding the value of each state using policy iteration.
+Please note the policy evaluation is omitted in this example.
 
 '''
-
+# 4x4 grid - do not change size/shape as it is hardcoded in code below
+# can change location of S
 custom_map = [
-    'SFFF',
+    'GSFF',
     'FFFF',
     'FFFF',
     'FFFG'
