@@ -54,6 +54,13 @@ print(env.P[0])
 state=3
 action=2
 print(env.P[state][action])
+'''
+to access indivdual value form env.P 
+env.P[i][j][0][0] - probability distribution
+env.P[i][j][0][1] - next state
+env.P[i][j][0][2] - reward
+env.P[i][j][0][3] - done
+'''
 
 # taking an action
 action=3
@@ -81,5 +88,11 @@ it can also be random
 '''
 random_action = env.action_space.sample()
 
+#another way of looping through all the states
+for state in range(env.nS):
+  print(state)
 
+#another way of looping through all the actions
+for action in range(env.nA):
+  print(action)
 
