@@ -2,8 +2,10 @@ import gym
 import numpy as np
 '''
 Cannonical example of finding the value of each state using policy iteration
-and policy evaluation.
-
+and then using the state values found do a policy evaluation to find a policy.
+This example is just to demonstrate polcy iteration and evaluation independently.
+This is not how it is supposed to be done, and the next example will show how
+policy evaluation can be used inside the iteration loop to converge faster.
 
 '''
 # 4x4 grid - do not change size/shape as it is hardcoded in code below
@@ -88,11 +90,10 @@ while not converged:
   if(diffav <= convergencelimit):
     break
 
+print("The converged state values are as follows")
 print(v.reshape(4,4))
 
 print("------------------")
-#policy = get_policy(env, v)
-#print(np.reshape(policy,(4,4)) )
+print("From the above state values we can find the policy")
 policy = evaluate_policy(env,v)
-
 print(policy.reshape(4,4))
