@@ -1,10 +1,10 @@
 import gym
 import numpy as np
 '''
-Cannonical example of finding the value of each state using policy iteration.
-Please note the policy evaluation is omitted in this example.
-A uniform random policy i.e every action has equal chance is applied.
-There are 4 actions (up/down/left/right) and each have 25% chance
+Cannonical example of finding the value of each state using policy iteration
+and policy evaluation.
+
+
 '''
 # 4x4 grid - do not change size/shape as it is hardcoded in code below
 # can change location of S
@@ -15,6 +15,22 @@ custom_map = [
     'FFFG'
 ]
 # in above S can be anywhere there is a F. Only one S though
+
+def evaluate_policy(env,statevalue):
+  i=0
+  neighbourvalues=np.zeros(4)
+  policy=np.zeros(16)
+  while i < env.observation_space.n:
+    j=0
+    while j< env.action_space.n:
+      nextstate = env.P[i][j][0][1]
+      print(nextstate)
+      neighbourvalues[j]=statevalue[nextstate]
+      j=j+1      
+    
+    policy[i]=np.argmax(neighbourvalues)
+    i=i+1
+  return policy
 
 gamma=1.0  #discount factor
 reward=0
@@ -28,7 +44,7 @@ env.render()
 '''
 Starting at a grid cell, sweep through the entire state space (i.e our policy)
 For each calcualte the utility value v(s) till done (i.e reach terminal state)
-Note 2 terminal states in this case.
+Note 2 terminal states in this case.https://www.geeksforgeeks.org/numpy-argmax-python/
 
 At the end of a sweep state update the utility values with the new ones calcuated.
 
@@ -73,3 +89,10 @@ while not converged:
     break
 
 print(v.reshape(4,4))
+
+print("------------------")
+#policy = get_policy(env, v)
+#print(np.reshape(policy,(4,4)) )
+policy = evaluate_policy(env,v)
+
+print(policy.reshape(4,4))
