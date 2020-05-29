@@ -2,7 +2,6 @@ import gym
 import numpy as np
 '''
 Cannonical example of finding the value of each state using policy iteration.
-Please note the policy evaluation is omitted in this example.
 A uniform random policy i.e every action has equal chance is applied.
 There are 4 actions (up/down/left/right) and each have 25% chance
 '''

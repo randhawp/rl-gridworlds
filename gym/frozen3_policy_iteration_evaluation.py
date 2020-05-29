@@ -1,11 +1,10 @@
 import gym
 import numpy as np
 '''
-Cannonical example of finding the value of each state using policy iteration
-and then using the state values found do a policy evaluation to find a policy.
-This example is just to demonstrate polcy iteration and evaluation independently.
-This is not how it is supposed to be done, and the next example will show how
-policy evaluation can be used inside the iteration loop to converge faster.
+Cannonical example of dynamic programming showing
+a) policy iteration - calcualting state values
+b) policy evaluation - finding if the policy has converged
+c) policy extraction - printing the policy when converged (pi*)
 
 '''
 # 4x4 grid - do not change size/shape as it is hardcoded in code below
