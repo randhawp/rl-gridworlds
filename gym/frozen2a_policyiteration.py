@@ -1,9 +1,29 @@
 import gym
 import numpy as np
 '''
-Cannonical example of finding the value of each state using policy iteration.
-A uniform random policy i.e every action has equal chance is applied.
-There are 4 actions (up/down/left/right) and each have 25% chance
+In froze2_policyiteration the result on convergence is not
+
++-----+-----+-----+-----+
+|  0  | -14 | -20 | -22 |
++-----+-----+-----+-----+
+| -14 | -18 | -20 | -20 |
++-----+-----+-----+-----+
+| -20 | -20 | -18 | -14 |
++-----+-----+-----+-----+
+| -22 | -20 | -14 |  0  |
++-----+-----+-----+-----+
+as in Richard S. Sutton and Andrew G. Bartos bible on RL
+but it is
+ [[ 0. -13. -19. -21.]
+ [-13. -17. -19. -19.]
+ [-19. -19. -17. -13.]
+ [-21. -19. -13.   0.]]
+
+This is because the terminal states are included in the evaluation.
+Different state values do not matter as long as they are all proportional
+and the policy still converges
+
+In this example we exclude the terminal states to arrive at the result in the book
 '''
 # 4x4 grid - do not change size/shape as it is hardcoded in code below
 # can change location of S
@@ -15,7 +35,8 @@ custom_map = [
 ]
 # in above S can be anywhere there is a F. Only one S though
 
-
+gamma=1.0  #discount factor
+reward=0
 
 cstate=[] # current state value in a sweep
 fstate=[] # final state value
@@ -33,33 +54,28 @@ At the end of a sweep state update the utility values with the new ones calcuate
 Continue till the time convergence is achieved.
 
 '''
-#hyperparameters
-gamma=1.0  #discount factor
-p=0.25 # deterministic probability distribution and set every action to equal chance
-reward=-1 # lets not use the environment reward, our reward is -1 for every step
-convergencelimit = 0.0001 # stop when state values differ less than this value
-
 i=j=0
 
-#define the arrays to hold the state value and action values
-v=np.zeros(16)  # holds the cumulative values of states
-vtemp=np.zeros(16) # holds state value temporarily until sweep is finished
-actionvalue=np.zeros(4) # holds the actual individual value for each neghiboring state
+v=np.zeros(16)  # holds the actual values
+vtemp=np.zeros(16) # holds values temporarily until sweep is finished
+actionvalue=np.zeros(4) # array to store the value for a state due to actions in that state
+convergencelimit = 0.0001
 converged = False
+reward = -1 # override the environment and change reward to -1 for each step
+c=0
+p=0.25 # override probability distribution and set every action to equal chance
 
 while not converged:
-  i=0
-  while i < env.observation_space.n: #sweep across the state space
+  i=1
+  while i < env.observation_space.n -1: #sweep across the state space
     j=0
     while j< env.action_space.n:
       
       nextstate = env.P[i][j][0][1] #next state
       done = env.P[i][j][0][3] #done
-      if done:
-        actionvalue[j] = 0 # value of terminal state is zero
-      else:
-        actionvalue[j] = p * (reward + gamma*v[nextstate]) # value of this state for this action
       
+      actionvalue[j] = p * (reward + gamma*v[nextstate]) # value of this state for this action
+  
       j=j+1
 
     vtemp[i] = np.sum(actionvalue) # value is the sum of all action value
@@ -73,5 +89,5 @@ while not converged:
   v = np.copy(vtemp) #sweep is finished, update the entire state space with new values
   if(diffav <= convergencelimit):
     break
-v=np.round(v)
+v=np.round(v)  
 print(v.reshape(4,4))
