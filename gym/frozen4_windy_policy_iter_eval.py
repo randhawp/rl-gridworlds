@@ -2,6 +2,7 @@ import gym
 import numpy as np
 '''
 Cannonical example of dynamic programming showing
+stochaistic environment
 a) policy iteration - calcualting state values
 b) policy evaluation - finding if the policy has converged
 c) policy extraction - printing the policy when converged (pi*)
