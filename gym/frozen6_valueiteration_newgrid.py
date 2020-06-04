@@ -19,7 +19,7 @@ custom_map = [
 Modified argmax to return location of all highest values
 '''
 def findargmax( arr ):
-    x = np.max(arr) #find highest 
+    x = np.max(arr) #find highest
     y = np.where(arr==x) #find index of 1 or n highest
     return  y[0].flatten().tolist(),len(y[0])
 
@@ -45,13 +45,13 @@ def evaluate_policy(env,statevalue):
     while j< env.action_space.n:
       nextstate = env.P[i][j][0][1]
       neighbourvalues[j]=statevalue[nextstate]
-      j=j+1    
-      
+      j=j+1
+
     directions,length = findargmax(neighbourvalues)
     if length==4 and neighbourvalues[0]==0:
       policy.append(-1)
     elif length==4:
-      policy.append(5);    
+      policy.append(5);
     else:
       policy.append(directions)
     i=i+1
@@ -60,7 +60,8 @@ def evaluate_policy(env,statevalue):
 
 cstate=[] # current state value in a sweep
 fstate=[] # final state value
-env = gym.make("FrozenLake-v0",desc=custom_map, is_slippery=False)
+#env = gym.make("FrozenLake-v0",desc=custom_map, is_slippery=False)
+env = gym.make("FrozenLake-v0", is_slippery=False)
 env.reset()
 env.render()
 
@@ -75,11 +76,11 @@ Continue till the time convergence is achieved.
 
 '''
 i=j=0
-
+np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
 #hyperparameters
-gamma=0.9  #discount factor
+gamma=1.0 #discount factor
 p=0.25 # deterministic probability distribution and set every action to equal chance
-reward=-1 # lets not use the environment reward, our reward is -1 for every step
+reward=0 # lets not use the environment reward, our reward is -1 for every step
 convergencelimit = 0.0001 # stop when state values differ less than this value
 
 i=j=0
@@ -89,39 +90,31 @@ v=np.zeros(16)  # holds the cumulative values of states
 vtemp=np.zeros(16) # holds state value temporarily until sweep is finished
 actionvalue=np.zeros(4) # holds the actual individual value for each neghiboring state
 converged = False
-
-while not converged:
+iter=0
+while iter < 100:
   i=0
   while i < env.observation_space.n: #sweep across the state space
     j=0
     while j< env.action_space.n:
       nextstate = env.P[i][j][0][1] #next state
+      reward = env.P[i][j][0][2] #done
       done = env.P[i][j][0][3] #done
-      if done:
-        actionvalue[j] = 0  # value of terminal state is zero
-        print('Terminal state')
-      else:
-        actionvalue[j] = p * (reward + gamma*v[nextstate]) # value of this state for this action
-      
+      actionvalue[j] = p * (reward + gamma*v[nextstate]) # value of this state for this action
       j=j+1
 
-    vtemp[i] = np.max(actionvalue)  # value is the sum of all action value
+    vtemp[i] = np.max(actionvalue)  # value is the best action
+
     i=i+1
-    
-  #check if converged
-  #calculate the diff between the two state spaces
-  diff = v - vtemp
-  diffav = abs(np.sum(diff))/(16)
+    iter=iter+1
 
   v = np.copy(vtemp) #sweep is finished, update the entire state space with new values
-  if(diffav <= convergencelimit):
-    break
 
 print("The converged state values are as follows")
+
 print(v.reshape(4,4))
 
 print("------------------")
-print("From the above state values we can find the policy")
+print("From the above state values we can find the policy",iter)
 policy = evaluate_policy(env,v)
 #printing policy array in sections to reshape it
 #printing policy array in sections to reshape it
@@ -129,6 +122,3 @@ print(policy[0:4])
 print(policy[4:8])
 print(policy[8:12])
 print(policy[12:16])
-
-
-
