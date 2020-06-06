@@ -91,15 +91,20 @@ vtemp=np.zeros(16) # holds state value temporarily until sweep is finished
 actionvalue=np.zeros(4) # holds the actual individual value for each neghiboring state
 converged = False
 iter=0
+
 while iter < 100:
   i=0
   while i < env.observation_space.n: #sweep across the state space
     j=0
     while j< env.action_space.n:
       nextstate = env.P[i][j][0][1] #next state
+
       reward = env.P[i][j][0][2] #done
       done = env.P[i][j][0][3] #done
-      actionvalue[j] = p * (reward + gamma*v[nextstate]) # value of this state for this action
+      if i==15:
+          actionvalue[j]=1
+      else:
+          actionvalue[j] = p * (reward + gamma*v[nextstate]) # value of this state for this action
       j=j+1
 
     vtemp[i] = np.max(actionvalue)  # value is the best action
