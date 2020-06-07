@@ -9,9 +9,9 @@ value iteration and arriving at the correct policy
 # can change location of S
 custom_map = [
     'SFFF',
-    'FFFF',
-    'FFFF',
-    'FFFG'
+    'FFHF',
+    'HHHF',
+    'GFFF'
 ]
 # in above S can be anywhere there is a F. Only one S though
 
@@ -61,7 +61,7 @@ def evaluate_policy(env,statevalue):
 cstate=[] # current state value in a sweep
 fstate=[] # final state value
 #env = gym.make("FrozenLake-v0",desc=custom_map, is_slippery=False)
-env = gym.make("FrozenLake-v0", is_slippery=False)
+env = gym.make("FrozenLake-v0",desc=custom_map, is_slippery=False)
 env.reset()
 env.render()
 
@@ -76,7 +76,7 @@ Continue till the time convergence is achieved.
 
 '''
 i=j=0
-np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
+np.set_printoptions(formatter={'float': '{: 0.5f}'.format})
 #hyperparameters
 gamma=1.0 #discount factor
 p=0.25 # deterministic probability distribution and set every action to equal chance
@@ -115,6 +115,7 @@ while iter < 100:
 
     i=i+1
   iter=iter+1
+
   v = np.copy(vtemp) #sweep is finished, update the entire state space with new values
 
 print("The converged state values are as follows")
