@@ -81,7 +81,7 @@ np.set_printoptions(formatter={'float': '{: 0.5f}'.format})
 gamma=1.0 #discount factor
 p=0.25 # deterministic probability distribution and set every action to equal chance
 reward=0 # lets not use the environment reward, our reward is -1 for every step
-convergencelimit = 0.0001 # stop when state values differ less than this value
+convergencelimit = 0.00001 # stop when state values differ less than this value
 
 i=j=0
 
@@ -92,8 +92,9 @@ actionvalue=np.zeros(4) # holds the actual individual value for each neghiboring
 converged = False
 iter=0
 rewardstate=0
-found=0
-while iter < 100:
+goalstate_found=0
+converged=False;
+while not converged:
   i=0
   while i < env.observation_space.n: #sweep across the state space
     j=0
@@ -102,10 +103,10 @@ while iter < 100:
 
       reward = env.P[i][j][0][2] #done
       done = env.P[i][j][0][3] #done
-      if reward==1 and found==0:
+      if reward==1 and goalstate_found==0:
           print(nextstate)
           rewardstate=nextstate
-          found=1
+          goalstate_found=1
       else:
           actionvalue[j] = p * (reward + gamma*v[nextstate]) # value of this state for this action
       j=j+1
@@ -115,6 +116,10 @@ while iter < 100:
 
     i=i+1
   iter=iter+1
+  diff = v - vtemp
+  diffav = abs(np.sum(diff))/(16)
+  if(diffav <= convergencelimit):
+     converged=True
 
   v = np.copy(vtemp) #sweep is finished, update the entire state space with new values
 
