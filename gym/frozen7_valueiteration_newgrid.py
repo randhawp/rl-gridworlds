@@ -9,9 +9,9 @@ value iteration and arriving at the correct policy
 # can change location of S
 custom_map = [
     'SFFF',
-    'FFHF',
-    'HHHF',
-    'GFFF'
+    'HFFF',
+    'GHHF',
+    'FFFF'
 ]
 # in above S can be anywhere there is a F. Only one S though
 
@@ -80,6 +80,7 @@ np.set_printoptions(formatter={'float': '{: 0.5f}'.format})
 #hyperparameters
 gamma=1.0 #discount factor
 p=0.25 # deterministic probability distribution and set every action to equal chance
+# change reward to -1 if there are many H.
 reward=0 # lets not use the environment reward, our reward is -1 for every step
 convergencelimit = 0.00001 # stop when state values differ less than this value
 
