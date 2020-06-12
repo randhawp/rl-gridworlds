@@ -3,6 +3,12 @@ import numpy as np
 '''
 MonteCarlo
 '''
+custom_map = [
+    'SFFF',
+    'FFFF',
+    'FFFF',
+    'FFFG'
+]
 def findargmax( arr ):
     x = np.max(arr) #find highest
     y = np.where(arr==x) #find index of 1 or n highest
@@ -46,7 +52,7 @@ def evaluate_policy(env,statevalue):
 cstate=[] # current state value in a sweep
 fstate=[] # final state value
 #env = gym.make("FrozenLake-v0",desc=custom_map, is_slippery=False)
-env = gym.make("FrozenLake-v0", is_slippery=False)
+env = gym.make("FrozenLake-v0", desc=custom_map,is_slippery=False)
 env.reset()
 env.render()
 
@@ -76,12 +82,41 @@ v=np.zeros(16)  # holds the cumulative values of states
 vtemp=np.zeros(16) # holds state value temporarily until sweep is finished
 actionvalue=np.zeros(4) # holds the actual individual value for each neghiboring state
 converged = False
-iter=0
+episodecount=0
 rewardstate=0
 goalstate_found=0
 converged=False;
-while iter < 20:
-    random_action = env.action_space.sample()
-    observation, reward, done, info = env.step(random_action)
-    env.render()
-    iter=iter+1
+'''
+first visit MonteCarlo only one value per state is stored during an episode
+every visit MonteCarlo all visited states (duplicates or more) are retained
+in the episode
+'''
+done=False
+episodepath=[]
+episodelen=0
+
+while episodecount < 200: # number of episoded to play
+    env.reset() # before each episode get back to starting state
+    while 1:
+        random_action = env.action_space.sample()
+        nextstate, reward, done, info = env.step(random_action)
+        episodepath.append([nextstate,reward])
+        episodelen=episodelen+1
+        if done:
+            break #episde is finished
+    #print("last episode len is ",episodelen)
+
+    #calculate the value of each state from the end to start
+    
+    for x in episodepath[::1]:
+        # newval = reward + learningrate(thisval  - oldval)
+        state = int(x[0])
+        reward =x[1]
+        print(state,reward)
+        vtemp[state] = reward + 0.3*(vtemp[state] - v[state])
+    v=np.copy(vtemp)
+    episodepath=[]
+    episodecount+=1
+    print("--------------------",episodecount)
+
+print(v.reshape(4,4))
