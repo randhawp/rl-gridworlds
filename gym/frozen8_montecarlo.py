@@ -67,7 +67,7 @@ Continue till the time convergence is achieved.
 
 '''
 i=j=0
-np.set_printoptions(formatter={'float': '{: 0.5f}'.format})
+np.set_printoptions(formatter={'float': '{: 0.8f}'.format})
 #hyperparameters
 gamma=1.0 #discount factor
 p=0.25 # deterministic probability distribution and set every action to equal chance
@@ -95,25 +95,26 @@ done=False
 episodepath=[]
 episodelen=0
 
-while episodecount < 200: # number of episoded to play
+while episodecount < 1: # number of episoded to play
     env.reset() # before each episode get back to starting state
     while 1:
         random_action = env.action_space.sample()
         nextstate, reward, done, info = env.step(random_action)
         episodepath.append([nextstate,reward])
         episodelen=episodelen+1
-        if done:
-            break #episde is finished
+        if done and reward>0: #reached a reward state
+            break
     #print("last episode len is ",episodelen)
 
-    #calculate the value of each state from the end to start
-    
-    for x in episodepath[::1]:
-        # newval = reward + learningrate(thisval  - oldval)
-        state = int(x[0])
-        reward =x[1]
+    #calculate the value of each visited state from the goal to start
+    episodepath_reversed=np.flip(episodepath)
+    p=0
+    for reward,state in episodepath_reversed:
         print(state,reward)
-        vtemp[state] = reward + 0.3*(vtemp[state] - v[state])
+        state=int(state)
+        vtemp[state] = reward + (1/2)*(p)
+        p=vtemp[state] + p
+
     v=np.copy(vtemp)
     episodepath=[]
     episodecount+=1
