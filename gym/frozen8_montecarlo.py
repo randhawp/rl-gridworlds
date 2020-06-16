@@ -49,43 +49,18 @@ def evaluate_policy(env,statevalue):
   return policy
 
 
-cstate=[] # current state value in a sweep
-fstate=[] # final state value
-#env = gym.make("FrozenLake-v0",desc=custom_map, is_slippery=False)
 env = gym.make("FrozenLake-v0", desc=custom_map,is_slippery=False)
 env.reset()
 env.render()
 
-'''
-Starting at a grid cell, sweep through the entire state space (i.e our policy)
-For each calcualte the utility value v(s) till done (i.e reach terminal state)
-Note 2 terminal states in this case.https://www.geeksforgeeks.org/numpy-argmax-python/
-
-At the end of a sweep state update the utility values with the new ones calcuated.
-
-Continue till the time convergence is achieved.
-
-'''
-i=j=0
 np.set_printoptions(formatter={'float': '{: 0.9f}'.format})
-#hyperparameters
-gamma=1.0 #discount factor
-p=0.25 # deterministic probability distribution and set every action to equal chance
-# change reward to -1 if there are many H.
-reward=0 # lets not use the environment reward, our reward is -1 for every step
-convergencelimit = 0.00001 # stop when state values differ less than this value
-
-i=j=0
 
 #define the arrays to hold the state value and action values
-v=np.zeros(16)  # holds the cumulative values of states
-vtemp=np.zeros(16) # holds state value temporarily until sweep is finished
-actionvalue=np.zeros(4) # holds the actual individual value for each neghiboring state
-converged = False
+P=np.zeros(16)  # holds the current policy
+G=np.zeros(16) # holds state value temporarily until sweep is finished
 episodecount=0
 rewardstate=0
-goalstate_found=0
-converged=False;
+
 '''
 first visit MonteCarlo only one value per state is stored during an episode
 every visit MonteCarlo all visited states (duplicates or more) are retained
@@ -95,39 +70,49 @@ done=False
 episodepath=[]
 episodelen=0
 visitedstate=np.array([])
-
-while episodecount < 1: # number of episoded to play
+lastval=0
+prevstate=-1
+while episodecount < 200: # number of episoded to play
     env.reset() # before each episode get back to starting state
     while 1:
         random_action = env.action_space.sample()
-        nextstate, reward, done, info = env.step(random_action)
-        teststate = np.where(visitedstate==nextstate)
-        if len(teststate[0]>0):
-            print(teststate[0],"found")
-            continue
+        state, reward, done, info = env.step(random_action)
 
-        visitedstate = np.append(visitedstate,nextstate)
-        episodepath.append([nextstate,reward])
+        if prevstate==state:
+            continue
+        episodepath.append([state,reward])
         episodelen=episodelen+1
-        prevstate = nextstate
+        prevstate = state
         if done and reward>0: #reached a reward state
             break
     #print("last episode len is ",episodelen)
 
     #calculate the value of each visited state from the goal to start
     episodepath_reversed=np.flip(episodepath)
-    p=0
+    g=0
 
     for reward,state in episodepath_reversed:
         print(state,reward)
-
         state=int(state)
-        vtemp[state] = reward + 0.2 * p
-        p = vtemp[state]
+        G[state] = reward + 0.2 * g
+        g = G[state]
 
-    v=np.copy(vtemp)
+
+    print("--------------------",episodecount,G[0])
+    if(G[0] > lastval): # if staret state has the highest value
+            P=np.copy(G) #then keep these state values for policy
+            lastval = G[0]
+
     episodepath=[]
+    teststate=[]
+    visitedstate=[]
     episodecount+=1
-    print("--------------------",episodecount)
 
-print(v.reshape(4,4))
+print(P.reshape(4,4))
+policy = evaluate_policy(env,P)
+#printing policy array in sections to reshape it
+#printing policy array in sections to reshape it
+print(policy[0:4])
+print(policy[4:8])
+print(policy[8:12])
+print(policy[12:16])
